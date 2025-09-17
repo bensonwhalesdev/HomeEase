@@ -1,9 +1,10 @@
 "use client";
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import Cookies from "js-cookie";
 import { LoginInput } from "../types/auth";
-
 
 export const useLogin = () => {
   const [loading, setLoading] = useState(false);
@@ -35,7 +36,11 @@ export const useLogin = () => {
       if (data.errors) {
         setError(data.errors[0].message);
       } else {
-        localStorage.setItem("token", data.data.login.token);
+        const token = data.data.login.token;
+
+        // Save token in cookies (7 days)
+        Cookies.set("token", token, { expires: 7, secure: true, sameSite: "strict" });
+
         router.push("/dashboard");
       }
     } catch (err: any) {

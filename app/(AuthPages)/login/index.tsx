@@ -3,13 +3,15 @@ import { useState } from "react";
 import { LoginInput } from "../types/auth";
 import { useLogin } from "../Hooks/useLogin";
 import AuthHeader from "../authHeader";
-
+import { Eye, EyeOff } from "lucide-react";
 
 const Login = () => {
   const [formData, setFormData] = useState<LoginInput>({
     email: "",
     password: "",
   });
+
+  const [showPassword, setShowPassword] = useState(false);
 
   const { login, loading, error } = useLogin();
 
@@ -25,9 +27,9 @@ const Login = () => {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
       <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-xl">
-        <AuthHeader 
-          title="Welcome Back" 
-          subtitle="Login to continue your journey!" 
+        <AuthHeader
+          title="Welcome Back"
+          subtitle="Login to continue your journey!"
         />
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -40,15 +42,26 @@ const Login = () => {
             required
             className="w-full rounded-lg border px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-            className="w-full rounded-lg border px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+
+          {/* Password with toggle */}
+          <div className="relative">
+            <input
+              type={showPassword ? "text" : "password"}
+              name="password"
+              placeholder="Password"
+              value={formData.password}
+              onChange={handleChange}
+              required
+              className="w-full rounded-lg border px-4 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-2.5 text-gray-500 hover:text-gray-700"
+            >
+              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+            </button>
+          </div>
 
           <button
             type="submit"
@@ -59,7 +72,9 @@ const Login = () => {
           </button>
         </form>
 
-        {error && <p className="mt-4 text-center text-sm text-red-500">{error}</p>}
+        {error && (
+          <p className="mt-4 text-center text-sm text-red-500">{error}</p>
+        )}
       </div>
     </div>
   );
