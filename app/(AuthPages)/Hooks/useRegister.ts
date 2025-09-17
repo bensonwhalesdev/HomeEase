@@ -52,7 +52,7 @@ export const useRegister = () => {
         // Save token to cookies (expires in 7 days)
         Cookies.set("token", token, { expires: 7, secure: true, sameSite: "strict" });
 
-        router.push("/dashboard");
+        router.push("/");
       }
     } catch (err: any) {
       setError(err.message || "Something went wrong");
