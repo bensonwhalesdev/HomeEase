@@ -11,3 +11,7 @@ export type Product = {
   reviews?: number;
   brand?: string;
 };
+
+export type CreateProductInput = Omit<Product, "id" | "rating" | "reviews">;
+
+export type UpdateProductInput = Omit<Product, "reviews" | "rating"> & { id: string };

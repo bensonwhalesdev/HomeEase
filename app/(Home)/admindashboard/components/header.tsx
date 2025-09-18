@@ -22,6 +22,7 @@ const AdminHeader = () => {
           <Link href="#" className="hover:text-white transition">Overview</Link>
           <Link href="#" className="hover:text-white transition">Users</Link>
           <Link href="/admindashboard/products" className="hover:text-white transition">Products</Link>
+          <Link href="/admindashboard/orders" className="hover:text-white transition">Orders</Link>
           <Link href="#" className="hover:text-white transition">Reports</Link>
         </nav>
 

@@ -6,6 +6,9 @@ import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue, } from "
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Search } from "lucide-react";
 import { useProducts } from "./Hooks/useProduct";
+import { Skeleton } from "@/components/ui/skeleton";
+import Image from "next/image";
+import Link from "next/link";
 
 export default function Products() {
   const [search, setSearch] = useState("");
@@ -14,6 +17,7 @@ export default function Products() {
 
   const { products, loading, error } = useProducts();
 
+  // Filtering + Sorting
   const filteredProducts = products
     .filter((p) => p.title.toLowerCase().includes(search.toLowerCase()))
     .filter((p) => (category === "all" ? true : p.category === category))
@@ -29,38 +33,52 @@ export default function Products() {
       <div className="flex-1 p-6">
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-2xl font-bold text-[#5C5C79]">Products</h1>
-          <Button className="bg-[#5C5C79] text-white hover:bg-[#4a4a66]">
+          <Link href="/admindashboard/products/create"><Button className="bg-[#5C5C79] text-white hover:bg-[#4a4a66]">
             + Create Product
-          </Button>
+          </Button></Link>
         </div>
 
-        {/* Loading/Error states */}
         {loading && <p className="text-[#5C5C79]">Loading products...</p>}
         {error && <p className="text-red-500">{error}</p>}
 
-        {/* Product Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {filteredProducts.map((product) => (
-            <div
-              key={product.id}
-              className="bg-white shadow-lg rounded-xl p-4 hover:shadow-xl transition"
-            >
-              <img
-                src={product.image}
-                alt={product.title}
-                className="w-full h-40 object-cover rounded-lg mb-3"
-              />
-              <h2 className="text-lg font-semibold text-[#5C5C79]">
-                {product.title}
-              </h2>
-              <p className="text-sm text-gray-600">{product.category}</p>
-              <p className="font-bold text-[#5C5C79]">${product.price}</p>
-              <p className="text-xs text-gray-500">
-                {product.brand} • {product.color} {product.size && `• ${product.size}`}
-              </p>
-            </div>
-          ))}
-        </div>
+        {/* Skeletons while loading */}
+        {loading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="space-y-4">
+                <Skeleton className="h-40 w-full rounded-lg" />
+                <Skeleton className="h-4 w-3/4" />
+                <Skeleton className="h-4 w-1/2" />
+                <Skeleton className="h-6 w-1/3" />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredProducts.map((product) => (
+              <div
+                key={product.id}
+                className="border rounded-lg p-4 shadow-sm hover:shadow-md transition"
+              >
+                <Image
+                  src={product.image}
+                  alt={product.title}
+                  width={300}
+                  height={200}
+                  className="w-full h-40 object-cover rounded-md mb-4"
+                />
+                <h3 className="font-semibold text-lg text-[#5C5C79]">
+                  {product.title}
+                </h3>
+                <p className="text-sm text-gray-500">{product.category}</p>
+                <p className="text-[#FEB20F] font-bold mt-2">
+                  ${product.price}
+                </p>
+                <Link href={`/admindashboard/products/${product.id}`} className="mt-4 inline-block px-4 py-2 text-white bg-[#5C5C79] rounded-md hover:bg-[#FEB20F] transition">View Product</Link>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Sidebar (Desktop) */}
